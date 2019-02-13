@@ -6,5 +6,12 @@ const login = ({ username = "", password = "" }) => {
     password
   });
 };
+const logout = () => Axios.get("/api/admin/logout");
+const profile = option => {
+  return Axios.get("http://localhost:3000/api/admin/profile", {
+    ...option,
+    withCredentials: true
+  });
+};
 
-export { login };
+export { login, logout, profile };

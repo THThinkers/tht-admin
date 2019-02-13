@@ -1,14 +1,26 @@
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Button, message } from "antd";
 import Link from "next/link";
+import Router from "next/router";
 import routes from "../routes";
+import { logout } from "../api/base";
 
 const { Header, Content, Footer } = Layout;
 
 const LayoutComp = ({ children }) => {
+  const handleLogout = async () => {
+    await logout();
+    message.info("성공적으로 로그아웃 되었습니다.");
+    Router.push("/");
+  };
   return (
     <Layout>
       <Header>
-        <div style={{ float: "left", color: "white" }}>THT</div>
+        <div key="logo" style={{ float: "left", color: "white" }}>
+          THT
+        </div>
+        <div key="logout" style={{ float: "right" }} onClick={() => logout()}>
+          <Button onClick={handleLogout}>로그아웃</Button>
+        </div>
         <Menu theme="dark" mode="horizontal" style={{ lineHeight: "64px" }}>
           {Object.keys(routes).map(path => {
             return (
@@ -21,7 +33,9 @@ const LayoutComp = ({ children }) => {
           })}
         </Menu>
       </Header>
-      <Content style={{ width: "80%", margin: "auto" }}>{children}</Content>
+      <Content style={{ width: "80%", margin: "auto", padding: "30px 0" }}>
+        {children}
+      </Content>
     </Layout>
   );
 };
