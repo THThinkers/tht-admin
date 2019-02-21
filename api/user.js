@@ -4,10 +4,16 @@ const instance = Axios.create({
   baseURL: "http://localhost:3000/api/admin/user", // 서버에서 호출 시
   withCredentials: true
 });
+const getUserProfile = ({ userId = "", option = {} }) => {
+  return instance.get(`/profile?userId=${userId}`, option);
+};
 const getUserList = (option = {}) => {
   return instance.get("/list", option);
 };
 const verifyUser = ({ userId = "" }) => {
   return instance.put("/verify", { userId });
 };
-export { getUserList, verifyUser };
+const deleteUser = ({ userId = "" }) => {
+  return instance.delete(`/delete/${userId}`);
+};
+export { getUserProfile, getUserList, verifyUser, deleteUser };
