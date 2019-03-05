@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 export const useAsyncTask = ({ api, parameter, callback }) => {
   const onRequest = useCallback(async () => {
@@ -10,4 +10,22 @@ export const useAsyncTask = ({ api, parameter, callback }) => {
     }
   }, [parameter]);
   return onRequest;
+};
+
+export const useAsyncAction = ({ api, callback = () => {} }) => {
+  const [status, setStatus] = useState("INIT");
+  const dispatchAction = useCallback(async (...args) => {
+    setStatus("WAITING");
+    try {
+      const { data } = await api(...args);
+      setStatus("SUCCESS");
+      callback(data);
+      return data;
+    } catch (err) {
+      setStatus("FAILURE");
+      callback(err);
+    }
+  }, []);
+
+  return [status, dispatchAction];
 };

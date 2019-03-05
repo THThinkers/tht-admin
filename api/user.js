@@ -16,4 +16,7 @@ const verifyUser = ({ userId = "" }) => {
 const deleteUser = ({ userId = "" }) => {
   return instance.delete(`/delete/${userId}`);
 };
-export { getUserProfile, getUserList, verifyUser, deleteUser };
+const updateUser = ({ _id, ...updateFields }) => {
+  return instance.put("/update", { _id, ...updateFields });
+};
+export { getUserProfile, getUserList, verifyUser, deleteUser, updateUser };

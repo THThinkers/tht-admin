@@ -1,55 +1,89 @@
-import { Col, Button, Popconfirm, message } from "antd";
+import { Col, Button, Popconfirm, message, Switch } from "antd";
 import { useState, useCallback, useMemo } from "react";
 import Router from "next/router";
 import { CenterRow, Layout, VerifyButton, WithAuth } from "../components";
-import { getUserProfile, deleteUser } from "../api/user";
+import { getUserProfile, deleteUser, updateUser } from "../api/user";
 import { getCookie } from "../utils/auth";
 import { isBrowser } from "../utils/environment";
-import { useAsyncTask } from "../hooks/async";
+import { useAsyncAction, useAsyncTask } from "../hooks/async";
+
+const Label = {
+  username: "아이디",
+  name: "이름",
+  phoneNumber: "전화번호",
+  description: "자기소개",
+  major: "학과",
+  studentId: "학번",
+  isActive: "활동 여부"
+};
+const Order = {
+  username: 1,
+  name: 2,
+  phoneNumber: 3,
+  description: 4,
+  major: 5,
+  studentId: 6,
+  isActive: 7
+};
+const pickCommon = (from, base) =>
+  Object.keys(base).reduce((acc, key) => {
+    return {
+      ...acc,
+      [key]: from[key]
+    };
+  }, {});
+const orderByInfo = (from, sortInfo) => {
+  return Object.entries(from)
+    .map(([key, value]) => [key, value])
+    .sort(([first], [second]) => {
+      if (sortInfo[first] && sortInfo[second])
+        return sortInfo[first] - sortInfo[second];
+      if (sortInfo[first]) return -1;
+      else return 0;
+    });
+};
 
 const profile = ({ user, error, isExist }) => {
   if (!isExist) {
     return <Layout>회원정보를 찾을 수 없습니다.</Layout>;
   }
-  const order = {
-    username: 1,
-    name: 2,
-    phoneNumber: 3,
-    description: 4,
-    major: 5,
-    studentId: 6
-  };
-  const { isVerified: initialVerified, ...mainInfo } = user;
+  const {
+    isVerified: initialVerified,
+    _id: userId,
+    isActive: initailIsActive,
+    ...mainInfo
+  } = user;
+  const pickedInfo = pickCommon(mainInfo, Label);
+  const normalized = useMemo(() => orderByInfo(pickedInfo, Order), []);
   const [isVerified, setIsVerified] = useState(initialVerified);
-  const normalized = useMemo(
-    () =>
-      Object.entries(mainInfo)
-        .map(([key, value]) => [key, value])
-        .sort(([first], [second]) => {
-          if (order[first] && order[second])
-            return order[first] - order[second];
-          if (order[first]) return -1;
-          else return 0;
-        }),
-    []
-  );
+  const [isActive, setIsActive] = useState(initailIsActive);
   const handleVerified = useCallback(success => {
     if (success) {
       setIsVerified(prev => !prev);
     }
   }, []);
-  const handleDeleted = (success, payload) => {
-    if (success && payload.success) {
-      message.success("계정 삭제에 성공하였습니다.");
-      return Router.push("/user");
-    }
-    message.error("계정삭제에 실패하였습니다.");
-  };
   const onConfirmDelete = useAsyncTask({
     api: deleteUser,
-    parameter: { userId: user._id },
-    callback: handleDeleted
+    parameter: { userId },
+    callback: (success, payload) => {
+      if (success && payload.success) {
+        message.success("계정 삭제에 성공하였습니다.");
+        return Router.push("/user");
+      }
+      message.error("계정삭제에 실패하였습니다.");
+    }
   });
+  const [updateStatus, updateAction] = useAsyncAction({
+    api: updateUser
+  });
+  const onCheckIsActive = useCallback(async checked => {
+    try {
+      const data = await updateAction({ _id: userId, isActive: checked });
+      setIsActive(prev => !prev);
+    } catch (err) {
+      message.error("에러가 발생했습니다.");
+    }
+  }, []);
   return (
     <Layout>
       <CenterRow type="flex" justify="center">
@@ -62,14 +96,24 @@ const profile = ({ user, error, isExist }) => {
       >
         <table
           cellPadding={30}
-          style={{ backgroundColor: "white", borderRadius: 10 }}
+          style={{ backgroundColor: "white", borderRadius: 10, minWidth: 400 }}
         >
           <tbody>
             {normalized.map(([key, value]) => {
               return (
                 <tr key={key}>
-                  <th scope="row">{key}</th>
-                  <td>{value}</td>
+                  <th scope="row">{Label[key]}</th>
+                  <td>
+                    {key === "isActive" ? (
+                      <Switch
+                        defaultChecked={isActive}
+                        checked={isActive}
+                        onChange={onCheckIsActive}
+                      />
+                    ) : (
+                      value
+                    )}
+                  </td>
                 </tr>
               );
             })}
