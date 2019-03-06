@@ -16,13 +16,18 @@ const LayoutComp = ({ children }) => {
     <Layout>
       <Header>
         <div key="logo" style={{ float: "left", color: "white" }}>
-          THT
+          <Link href="/">
+            <a style={{ color: "white" }}>THT</a>
+          </Link>
         </div>
         <div key="logout" style={{ float: "right" }} onClick={() => logout()}>
           <Button onClick={handleLogout}>로그아웃</Button>
         </div>
         <Menu theme="dark" mode="horizontal" style={{ lineHeight: "64px" }}>
           {Object.keys(routes).map(path => {
+            if (!routes[path].onBoard) {
+              return null;
+            }
             return (
               <Menu.Item key={path}>
                 <Link href={path}>

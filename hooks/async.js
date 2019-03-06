@@ -19,7 +19,7 @@ export const useAsyncAction = ({ api, callback = () => {} }) => {
     try {
       const { data } = await api(...args);
       setStatus("SUCCESS");
-      callback(data);
+      callback(data, true);
       return data;
     } catch (err) {
       setStatus("FAILURE");

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card } from "antd";
+import { Card, Row, Col } from "antd";
 import Router from "next/router";
 import { Layout, Login, WithAuth } from "../components";
 import * as baseApi from "../api/base";
@@ -21,22 +21,26 @@ const Index = props => {
     return (
       <Layout>
         <div>
-          {Object.entries(routes).map(([key, route]) => {
-            const { name, description } = route;
-            if (key === "/") {
-              return null;
-            }
-            return (
-              <Card
-                key={key}
-                title={name}
-                extra={<a href={key}>이동</a>}
-                style={{ width: 300 }}
-              >
-                <p>{description}</p>
-              </Card>
-            );
-          })}
+          <Row>
+            {Object.entries(routes).map(([key, route]) => {
+              const { name, description, onBoard } = route;
+              if (!onBoard) {
+                return null;
+              }
+              return (
+                <Col span={8}>
+                  <Card
+                    key={key}
+                    title={name}
+                    extra={<a href={key}>이동</a>}
+                    style={{ width: 300, margin: 20 }}
+                  >
+                    <p>{description}</p>
+                  </Card>
+                </Col>
+              );
+            })}
+          </Row>
         </div>
       </Layout>
     );
