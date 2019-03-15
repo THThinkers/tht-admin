@@ -14,6 +14,7 @@ const Label = {
   description: "자기소개",
   major: "학과",
   studentId: "학번",
+  tags: "해시태그",
   isActive: "활동 여부"
 };
 const Order = {
@@ -23,7 +24,8 @@ const Order = {
   description: 4,
   major: 5,
   studentId: 6,
-  isActive: 7
+  tags: 7,
+  isActive: 8
 };
 const pickCommon = (from, base) =>
   Object.keys(base).reduce((acc, key) => {
@@ -57,6 +59,17 @@ const profile = ({ user, error, isExist }) => {
   const normalized = useMemo(() => orderByInfo(pickedInfo, Order), []);
   const [isVerified, setIsVerified] = useState(initialVerified);
   const [isActive, setIsActive] = useState(initailIsActive);
+  const renderer = {
+    major: major => <span>{major && major.name}</span>,
+    isActive: () => (
+      <Switch
+        defaultChecked={isActive}
+        checked={isActive}
+        onChange={onCheckIsActive}
+      />
+    ),
+    tags: tags => tags.map(tag => <span key={tag._id}>{tag.name}</span>)
+  };
   const handleVerified = useCallback(success => {
     if (success) {
       setIsVerified(prev => !prev);
@@ -103,17 +116,7 @@ const profile = ({ user, error, isExist }) => {
               return (
                 <tr key={key}>
                   <th scope="row">{Label[key]}</th>
-                  <td>
-                    {key === "isActive" ? (
-                      <Switch
-                        defaultChecked={isActive}
-                        checked={isActive}
-                        onChange={onCheckIsActive}
-                      />
-                    ) : (
-                      value
-                    )}
-                  </td>
+                  <td>{renderer[key] ? renderer[key](value) : value}</td>
                 </tr>
               );
             })}

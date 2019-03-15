@@ -13,12 +13,10 @@ const devProxy = {
 };
 app.prepare().then(() => {
   const server = express();
-  if (dev && devProxy) {
-    const proxyMiddleware = require("http-proxy-middleware");
-    Object.entries(devProxy).forEach(([url, option]) => {
-      server.use(proxyMiddleware(url, option));
-    });
-  }
+  const proxyMiddleware = require("http-proxy-middleware");
+  Object.entries(devProxy).forEach(([url, option]) => {
+    server.use(proxyMiddleware(url, option));
+  });
   server.all("*", (req, res) => handle(req, res));
   server.listen(3000, () => {
     console.log("Server listen");

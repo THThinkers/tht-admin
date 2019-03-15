@@ -6,7 +6,6 @@ const instance = Axios.create({
 });
 
 const getMajorList = ({ option = {} }) => {
-  console.log("ff");
   return instance.get("/list", option);
 };
 

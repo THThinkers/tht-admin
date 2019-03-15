@@ -1,9 +1,8 @@
 import { useMemo, useState, useCallback } from "react";
-import { message, Button, Table, Switch } from "antd";
+import { message, Table, Switch } from "antd";
 import Link from "next/link";
-import { Layout, VerifyButton, WithAuth } from ".";
-import { getUserList, verifyUser, updateUser } from "../api/user";
-import { getCookie } from "../utils/auth";
+import { VerifyButton } from ".";
+import { updateUser } from "../api/user";
 import { useAsyncAction } from "../hooks/async";
 
 const UserList = ({ users: initialUsers }) => {
@@ -28,7 +27,8 @@ const UserList = ({ users: initialUsers }) => {
       {
         title: "전공",
         dataIndex: "major",
-        key: "major"
+        key: "major",
+        render: (_, { major }) => <span>{major && major.name}</span>
       },
       {
         title: "학번",
