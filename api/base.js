@@ -1,14 +1,14 @@
 import Axios from "axios";
-
+import { SERVER_HOST } from "../utils/environment";
 const login = ({ username = "", password = "" }) => {
-  return Axios.post("http://localhost:3000/api/admin/login", {
+  return Axios.post(`${SERVER_HOST}/api/admin/login`, {
     username,
     password
   });
 };
-const logout = () => Axios.get("http://localhost:3000/api/admin/logout");
+const logout = () => Axios.get(`${SERVER_HOST}/api/admin/logout`);
 const profile = option => {
-  return Axios.get("http://localhost:3000/api/admin/profile", {
+  return Axios.get(`${SERVER_HOST}/api/admin/profile`, {
     ...option,
     withCredentials: true
   });

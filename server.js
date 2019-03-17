@@ -11,6 +11,7 @@ const devProxy = {
     changeOrigin: true
   }
 };
+console.log(process.env.test);
 app.prepare().then(() => {
   const server = express();
   const proxyMiddleware = require("http-proxy-middleware");
