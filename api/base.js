@@ -1,5 +1,6 @@
 import Axios from "axios";
 import { SERVER_HOST } from "../utils/environment";
+
 const login = ({ username = "", password = "" }) => {
   return Axios.post(`${SERVER_HOST}/api/admin/login`, {
     username,
