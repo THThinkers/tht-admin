@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Card, Row, Col } from "antd";
 import Router from "next/router";
 import { Layout, Login, WithAuth } from "../components";
@@ -28,11 +28,14 @@ const Index = props => {
                 return null;
               }
               return (
-                <Col span={8}>
+                <Col span={8} key={key}>
                   <Card
-                    key={key}
                     title={name}
-                    extra={<a href={key}>이동</a>}
+                    extra={
+                      <Link href={key}>
+                        <a>이동</a>
+                      </Link>
+                    }
                     style={{ width: 300, margin: 20 }}
                   >
                     <p>{description}</p>
