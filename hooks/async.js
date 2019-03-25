@@ -14,7 +14,7 @@ export const useAsyncTask = ({ api, parameter, callback }) => {
 
 export const useAsyncAction = ({ api, callback = () => {} }) => {
   const [status, setStatus] = useState("INIT");
-  const dispatchAction = useCallback(async (...args) => {
+  const dispatchAction = async (...args) => {
     setStatus("WAITING");
     try {
       const { data } = await api(...args);
@@ -25,7 +25,7 @@ export const useAsyncAction = ({ api, callback = () => {} }) => {
       setStatus("FAILURE");
       callback(err);
     }
-  }, []);
+  };
 
   return [status, dispatchAction];
 };

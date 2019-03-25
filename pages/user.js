@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Row, Col } from "antd";
+import Head from "next/head";
+import { Button, Row, Col, message } from "antd";
 import { getUserList } from "../api/user";
-import { Layout, UserList, WithAuth } from "../components";
+import { Layout, UserList, WithAuth, UploadButton } from "../components";
 import { getCookie } from "../utils/auth";
 
 const User = ({ users }) => {
@@ -12,6 +13,17 @@ const User = ({ users }) => {
     },
     { activeUsers: [], inActiveUsers: [] }
   );
+  const handleFileUpload = async files => {
+    const file = files[0];
+    const handlingError = () =>
+      message.error("이미지 업로드에 실패하였습니다.");
+    try {
+      const response = await uploadImage(file, "members", "members");
+      const { url } = response.data;
+    } catch (err) {
+      handlingError();
+    }
+  };
   return (
     <Layout>
       <Row gutter={16}>

@@ -15,6 +15,12 @@ const routes = {
     description: "회원가입시 학과목록을 관리합니다.",
     onBoard: true
   },
+  "/image": {
+    name: "이미지관리",
+    path: "/image",
+    description: "홈페이지에 들어갈 이미지들을 관리합니다.",
+    onBoard: true
+  },
   "/profile": {},
   "/hybrid_day": {
     name: "하이브리드 데이",
